@@ -24,47 +24,52 @@ public class ProductController {
     }
 
     @ResponseBody
-    @GetMapping("/all-products")
-    public String getAll(){
-        List<Product> productList = productRepository.findAll();
+    @GetMapping("/products")
+    public String find(@RequestParam(required = false) Category category) {
+        List<Product> result;
 
-        String productsDetails =  productList.stream()
+        if(category == null){
+            result = productRepository.findAll();
+        } else {
+            result = productRepository.findPerCategory(category);
+        }
+
+        String productsDetails = result.stream()
                 .map(Product::toString)
                 .collect(Collectors.joining("<br/>"));
 
-        String sumPrices = sumPrice(productList);
-        return productsDetails + sumPrices
+        double sumPrices = sumPrice(result, category);
+        return productsDetails + "<p>Suma cen powyższych produktów: " + sumPrices + " zł</p>"
                 + "<a href=\"http://localhost:8080/\" target=\"_blank\">Powrót do strony głównej</a><br/>";
     }
 
     @ResponseBody
     @GetMapping("/list")
-    public String getProductsPerCategory(@RequestParam String category){
-        List<Product> productList = productRepository.findPerCategory(Category.valueOf(category));
+    public String getProductsPerCategory(@RequestParam Category category) {
+        List<Product> productList = productRepository.findPerCategory(category);
 
-        String productsDetails =  productList.stream()
+        String productsDetails = productList.stream()
                 .map(Product::toString)
                 .collect(Collectors.joining("<br/>"));
 
-        String sumPrices = sumPrice(productList);
-        return productsDetails + sumPrices
+        double sumPrices = sumPrice(productList, category);
+        return productsDetails + "<p>Suma cen powyższych produktów: " + sumPrices + " zł</p>"
                 + "<a href=\"http://localhost:8080/\" target=\"_blank\">Powrót do strony głównej</a><br/>";
     }
 
-    public String sumPrice(List<Product> products){
-        double sum = 0;
-        for (Product product : products) {
-            sum += product.getPrice();
-        }
-        return "<p>Suma cen powyższych produktów: " + sum + " zł</p>";
+    public double sumPrice(List<Product> products, Category category) {
+        return products.stream()
+                .filter(product -> product.getCategory() == category)
+                .mapToDouble(product -> product.getPrice())
+                .sum();
     }
 
     @ResponseBody
     @PostMapping("/add")
-    public String add(@RequestParam String name, @RequestParam Double price, @RequestParam String category) {
-            Product product = new Product(name, price, Category.valueOf(category));
-            productRepository.save(product);
-            return "<p>Dodano nowy produkt</p>" + product.toString()
-                    + "<br/><a href=\"http://localhost:8080/\" target=\"_blank\">Powrót do strony głównej</a><br/>";
+    public String add(@RequestParam String name, @RequestParam Double price, @RequestParam Category category) {
+        Product product = new Product(name, price, category);
+        productRepository.save(product);
+        return "<p>Dodano nowy produkt</p>" + product.toString()
+                + "<br/><a href=\"http://localhost:8080/\" target=\"_blank\">Powrót do strony głównej</a><br/>";
     }
 }

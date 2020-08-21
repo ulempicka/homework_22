@@ -8,9 +8,12 @@
     <form method="post" action="/add">
         <h2>Dodaj nowy produkt</h2>
         Nazwa <input type="text" name="name"><br/>
-        Cena <input type="number" name="price"><br/>
-        Kategoria <input type="text" name="category"><br/>
-        <p>Dostępne kategorie: SPOZYWCZE, GOSP_DOM, INNE</p>
+        Cena <input type="number" name="price" step="0.01"><br/>
+        Kategoria <select name="category">
+            <option value="GROCERY">Spożywcze</option>
+            <option value="HOUSEHOLD">Gosp. domowe</option>
+            <option value="OTHERS">Inne</option>
+        </select><br/>
         <input type="submit" value="Dodaj">
     </form>
 </body>

@@ -2,9 +2,9 @@ package com.example.demo.exercise.model;
 
 public enum Category {
 
-    SPOZYWCZE("spożywcze"),
-    GOSP_DOM("gosp. domowe"),
-    INNE("inne");
+    GROCERY("spożywcze"),
+    HOUSEHOLD("gosp. domowe"),
+    OTHERS("inne");
 
     private final String description;
 
