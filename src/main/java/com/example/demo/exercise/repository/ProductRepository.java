@@ -33,4 +33,11 @@ public class ProductRepository {
                 .filter(product -> product.getCategory() == category)
                 .collect(Collectors.toList());
     }
+
+    public double sumPrice(List<Product> products, Category category) {
+        return products.stream()
+                .filter(product -> product.getCategory() == category)
+                .mapToDouble(product -> product.getPrice())
+                .sum();
+    }
 }

@@ -38,7 +38,7 @@ public class ProductController {
                 .map(Product::toString)
                 .collect(Collectors.joining("<br/>"));
 
-        double sumPrices = sumPrice(result, category);
+        double sumPrices = productRepository.sumPrice(result, category);
         return productsDetails + "<p>Suma cen powyższych produktów: " + sumPrices + " zł</p>"
                 + "<a href=\"http://localhost:8080/\" target=\"_blank\">Powrót do strony głównej</a><br/>";
     }
@@ -52,16 +52,9 @@ public class ProductController {
                 .map(Product::toString)
                 .collect(Collectors.joining("<br/>"));
 
-        double sumPrices = sumPrice(productList, category);
+        double sumPrices = productRepository.sumPrice(productList, category);
         return productsDetails + "<p>Suma cen powyższych produktów: " + sumPrices + " zł</p>"
                 + "<a href=\"http://localhost:8080/\" target=\"_blank\">Powrót do strony głównej</a><br/>";
-    }
-
-    public double sumPrice(List<Product> products, Category category) {
-        return products.stream()
-                .filter(product -> product.getCategory() == category)
-                .mapToDouble(product -> product.getPrice())
-                .sum();
     }
 
     @ResponseBody
